@@ -1,0 +1,2 @@
+rednet.open("bottom")
+

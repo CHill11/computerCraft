@@ -1,0 +1,12 @@
+while true do
+    os.pullEvent("turtle_inventory")
+    item = turtle.getItemDetail()
+    if item then
+        if item.name == "minecraft:glow_ink_sac" then
+            print("sorting " .. item.name)
+            turtle.dropDown()
+        else
+            turtle.drop()
+        end
+    end
+end      
