@@ -1,32 +1,7 @@
+term.clear()
 local usefulFunctions = require("usefulFunctions")
 if not fs.exists("undergroundBaseLocation") then shell.run("getfile",207,"undergroundBaseLocation.lua") end
 local undergroundBaseLocation = require("undergroundBaseLocation")
-
-local function dump(tbl, indent) -- use to debug tables
-    if not indent then
-        indent = ""
-    end
-    
-    local str = "{\n"
-    local new_indent = indent .. "  "
-    
-    for k, v in pairs(tbl) do
-        -- Convert the key to a printable string
-        local key_str = type(k) == "number" and "[" .. k .. "]" or '["' .. tostring(k) .. '"]'
-        
-        -- Handle value types
-        if type(v) == "table" then
-            str = str .. new_indent .. key_str .. " = " .. dump(v, new_indent)
-        elseif type(v) == "string" then
-            str = str .. new_indent .. key_str .. ' = "' .. v .. '",\n'
-        else
-            str = str .. new_indent .. key_str .. " = " .. tostring(v) .. ",\n"
-        end
-    end
-    
-    str = str .. indent .. "}"
-    return str
-end
 
 local function getReply()
     local id = nil
@@ -48,7 +23,6 @@ local function broadCastToHelppers()
     rednet.send(rednet.CHANNEL_BROADCAST,"tunnel","assistTunnel")
 end
 
-
 ---Get out of the way of the other turtles and get the direction facing
 ---@return number x
 ---@return number y
@@ -59,20 +33,19 @@ local function getFacing()
     local x,y,z = gps.locate()
     local facing, turned = usefulFunctions.northSouth(z) -- get the facing
     for i = 1,turned do --realign the turtle the direction it was placed
-        facing = usefulFunctions.turnLeft(facing)
+        facing = usefulFunctions.turnRight(facing)
     end
-    print(facing)
-    read()
     usefulFunctions.moveBack()
     return x,y,z,facing
 end
 
-
+-------- start of main ---------
 local baseXYZ = undergroundBaseLocation.xyz() --  the location of the base
 local customDest = false
 local assist = false -- if using helpers
 local destXYZ = {x = nil,y = nil,z = nil}-- location of destination
 local leaderID = nil -- the leadersID
+local computerID = os.getComputerID()
 local helperIDs = {}
 local helperCoords = {}
 local facing = nil
@@ -85,7 +58,6 @@ local x = nil
 local y = nil
 local z = nil
 local offset = 0
-
 
 print("Should I tunnel in assest mode? (Y/N)")
 local assistTemp = string.lower(read())
@@ -100,31 +72,31 @@ if assist then --if the turtle is expecting help
     print(usefulFunctions.yesNo(tempLeader))
     --Leader
     if usefulFunctions.yesNo(tempLeader) then -- if the turtle is the leader
-        leaderID = os.getComputerID
+        leaderID = computerID
+        print(leaderID)
         print("How many helpers?")
         local helpers = tonumber(read())
         for i = 1,helpers do -- create the proper ammount of values to store the number of helpers
             helperIDs[i] = false
         end
-        print("number of helpers in the table " .. #helperIDs)
+        --print("number of helpers in the table " .. #helperIDs)
         while true do
+            if helperIDs[#helperIDs] then
+                break
+            end
             broadCastToHelppers()
-            print("Waiting")
+            print("Waiting...")
             local id,message,protocal = getReply()
             if protocal == "reply" then
-                print("The info from the broadcast reply:" .."id " .. tostring(id) .. "message " .. tostring(message) .. " protocal " .. tostring(protocal))
+                --print("The info from the broadcast reply:" .."id " .. tostring(id) .. "message " .. tostring(message) .. " protocal " .. tostring(protocal))
                 if message == "confirm" then
                     confirm(id) -- send the confirmation reply
                     for i,v in pairs(helperIDs) do -- add their ID to the list
                         if v == false then
                             helperIDs[i] = id
-                            print(helperIDs[i])
-                            goto addedAnID
+                            print("Added " , id )
+                            break
                         end
-                    end
-                    ::addedAnID::
-                    if helperIDs[#helperIDs] then
-                        break
                     end
                 end
             else
@@ -156,9 +128,9 @@ end
 
 
 if assist then
-    if leaderID == os.getComputerID then
+    if leaderID == computerID then
         print("Do you want to use a custom destination? (Y/N)")
-        local tempBase = read()
+        local tempBase = string.lower(read())
         if usefulFunctions.yesNo(tempBase) then
             customDest = true
         end
@@ -232,7 +204,7 @@ if assist then
     end
 else -- if single tutle
 print("Do you want to use a custom destination? (Y/N)")
-    local tempBase = read()
+    local tempBase = string.lower(read())
     if usefulFunctions.yesNo(tempBase) then
         customDest = true
     end
@@ -256,14 +228,15 @@ end
 
 -- generatre the offsets
 if assist then
-    if leaderID == os.getComputerID then
+    if leaderID == computerID then
         local sortedIDs = {}
         for k,ids in ipairs(helperIDs)do
             table.insert(sortedIDs, ids) -- make a tepmorary table to sort the ids
         end
         table.sort(sortedIDs)
-        print(dump(sortedIDs))
-        for i = 1,#sortedIDs do
+
+        
+        for i, id in ipairs(sortedIDs) do
             local confirmation = false
             while not confirmation do
                 rednet.send(sortedIDs[i],i,"offset")
@@ -281,12 +254,10 @@ if assist then
     else -- helper get the offset
         local confirmation = false
         repeat
-            print("in repeat")
             local id, message, protocal = rednet.receive("offset")
             if protocal == "offset" then
                 offset = message
                 while not confirmation do -- keep tring to send the confirmation reply
-                    print("in while")
                     local sentConfirmation = confirm(leaderID)
                     id,message,protocal = getReply()
                     if protocal == "reply" then
@@ -303,7 +274,7 @@ if assist then
     end
 end
 
-if leaderID == os.getComputerID then
+if leaderID == computerID then
     local cont = true
     x,y,z,facing = getFacing() -- get x y z coords and facing
     while cont do
@@ -346,78 +317,43 @@ elseif assist then--helper
 end
 
 print("Ready! X:" .. tostring(destXYZ.x + offset) .. " Y:" .. tostring(destXYZ.y) .. " Z:" .. tostring(destXYZ.z + offset))
-
-if facing == "east" or facing == "west" then -- if x axis is longer than face that way 
-    x,y,z = gps.locate()
+x,y,z = gps.locate()
+_,facing = usefulFunctions.x(x,destXYZ.x,facing,true) -- face the east or west 
+print(facing)
+read()
+while x ~= destXYZ.x + offset and y ~= destXYZ.y and z ~= destXYZ.z + offset do -- continue until they are at location
+    repeat -- get to the proper y coord
+        x,y,z = gps.locate()
+        if y ~= destXYZ.y then
+            usefulFunctions.y(y,destXYZ.y,true)
+            usefulFunctions.placeDown()
+            _,moved,dug = usefulFunctions.moveForward(moved,dug)
+            dug = usefulFunctions.digUp(dug)
+        end
+    until y == destXYZ.y
+    print("Finished y " .. y)
+    read()
     _,facing = usefulFunctions.x(x,destXYZ.x,facing,true)
-    while x ~= destXYZ.x + offset and y ~= destXYZ.y and z ~= destXYZ.z + offset do -- continue until they are at location
-        repeat -- get to the proper y coord
-            x,y,z = gps.locate()
-            if y ~= destXYZ.y then
-                x,y,z = gps.locate()
-                usefulFunctions.y(y,destXYZ.y,true)
-                usefulFunctions.placeDown()
-                _,moved,dug = usefulFunctions.moveForward(moved,dug)
-                dug = usefulFunctions.digUp(dug)
-            end
-        until y == destXYZ.y
-        print("Finished y")
-        _,facing = usefulFunctions.x(x,destXYZ.x,facing,true)
-        repeat
-            x,y,z = gps.locate()
-            if x ~= destXYZ.x + offset then
-                _,moved,dug = usefulFunctions.moveForward(moved,dug)
-                dug = usefulFunctions.digUp(dug)
-                dug = usefulFunctions.digDown(dug)
-            end
-        until x == destXYZ.x + offset
-        print("Finished x")
-        _,facing = usefulFunctions.z(z,destXYZ.z,facing,true)
-        repeat
-            x,y,z = gps.locate()
-            if z ~= destXYZ.z then
-                _,moved,dug = usefulFunctions.moveForward(moved,dug)
-                dug = usefulFunctions.digUp(dug)
-                dug = usefulFunctions.digDown(dug)
-            end
-        until z == destXYZ.x + offset
-        print("Finished z")
-    end
-else -- goZ
+    usefulFunctions.moveBack()
+    repeat -- get to the proper x
+        x,y,z = gps.locate()
+        if x ~= destXYZ.x + offset then
+            _,moved,dug = usefulFunctions.moveForward(moved,dug)
+            dug = usefulFunctions.digUp(dug)
+            dug = usefulFunctions.digDown(dug)
+        end
+    until x == destXYZ.x + offset
+    print("Finished x " .. x .. "destX " .. destXYZ.x)
+    read()
     _,facing = usefulFunctions.z(z,destXYZ.z,facing,true)
-    while x ~= destXYZ.x + offset and y ~= destXYZ.y and z ~= destXYZ.z + offset do -- continue until they are at location
-        repeat -- get to the proper y coord
-            x,y,z = gps.locate()
-            if y ~= destXYZ.y then
-                x,y,z = gps.locate()
-                usefulFunctions.y(y,destXYZ.y,true)
-                usefulFunctions.placeDown()
-                _,moved,dug = usefulFunctions.moveForward(moved,dug)
-                dug = usefulFunctions.digUp(dug)
-            end
-        until y == destXYZ.y
-        print("Finished y")
-        _,facing = usefulFunctions.z(z,destXYZ.z,facing,true)
-        repeat
-            x,y,z = gps.locate()
-            if z ~= destXYZ.z then
-                _,moved,dug = usefulFunctions.moveForward(moved,dug)
-                dug = usefulFunctions.digUp(dug)
-                dug = usefulFunctions.digDown(dug)
-            end
-        until z == destXYZ.x + offset
-        print("Finished x")
-
-        _,facing = usefulFunctions.x(x,destXYZ.x,facing,true)
-        repeat
-            x,y,z = gps.locate()
-            if x ~= destXYZ.x + offset then
-                _,moved,dug = usefulFunctions.moveForward(moved,dug)
-                dug = usefulFunctions.digUp(dug)
-                dug = usefulFunctions.digDown(dug)
-            end
-        until x == destXYZ.x + offset
-        print("Finished z")
-    end
+    usefulFunctions.moveBack()
+    repeat
+        x,y,z = gps.locate()
+        if z ~= destXYZ.z + offset then
+            _,moved,dug = usefulFunctions.moveForward(moved,dug)
+            dug = usefulFunctions.digUp(dug)
+            dug = usefulFunctions.digDown(dug)
+        end
+    until z == destXYZ.z
+    print("Finished z " .. z .. "destZ " .. destXYZ.z .. " offset" .. offset)
 end
---start the mining loop

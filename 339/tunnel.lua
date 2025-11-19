@@ -235,6 +235,7 @@ if assist then
         end
         table.sort(sortedIDs)
 
+        
         for i, id in ipairs(sortedIDs) do
             local confirmation = false
             while not confirmation do
