@@ -1,3 +1,4 @@
+term.clear()
 local usefulFunctions = require("usefulFunctions")
 if not fs.exists("undergroundBaseLocation") then shell.run("getfile",207,"undergroundBaseLocation.lua") end
 local undergroundBaseLocation = require("undergroundBaseLocation")
@@ -31,13 +32,9 @@ local function getFacing()
     usefulFunctions.moveForward() -- move forward to get out of the way of other turtle
     local x,y,z = gps.locate()
     local facing, turned = usefulFunctions.northSouth(z) -- get the facing
-    print(facing)
-    read()
     for i = 1,turned do --realign the turtle the direction it was placed
         facing = usefulFunctions.turnRight(facing)
     end
-    print(facing)
-    read()
     usefulFunctions.moveBack()
     return x,y,z,facing
 end
@@ -237,13 +234,6 @@ if assist then
             table.insert(sortedIDs, ids) -- make a tepmorary table to sort the ids
         end
         table.sort(sortedIDs)
-
-        --debug
-        for id in ipairs(sortedIDs) do
-            print(sortedIDs[id])
-            read()
-        end
-        --]]
 
         for i, id in ipairs(sortedIDs) do
             local confirmation = false

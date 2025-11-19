@@ -235,13 +235,6 @@ if assist then
         end
         table.sort(sortedIDs)
 
-        --debug
-        for id in ipairs(sortedIDs) do
-            print(sortedIDs[id])
-            read()
-        end
-        --]]
-
         for i, id in ipairs(sortedIDs) do
             local confirmation = false
             while not confirmation do

@@ -683,10 +683,12 @@ end
 ---@param x number the x coordinate of the turtle now
 ---@param location number the coordiante of where the turtle should go
 ---@param facing string? track which way the turtle is facing. Should be a direction (north,east,south,west) Run either eastWest or northSouth to get the direction
+---@param single boolean? move only one block
 ---@return boolean
----@return string
-function usefulFunctions.x(x, location, facing)-- east west  
--- tutle is at the correct location
+---@return string facing
+function usefulFunctions.x(x, location, facing,single)-- east west  
+	single = single or false
+	-- tutle is at the correct location
 	--print(facing)
 	facing  = facing or ""
 	if x == location then
@@ -706,13 +708,17 @@ function usefulFunctions.x(x, location, facing)-- east west
 		else
 			usefulFunctions.eastWest(x,"west")
 		end
-
-		while true do
-			x,_,_ = gps.locate()
-			if x == location then
-				return true, facing
-			end
+		if single then
 			usefulFunctions.moveForward()
+			return true, facing
+		else
+			while true do
+				x,_,_ = gps.locate()
+				if x == location then
+					return true, facing
+				end
+				usefulFunctions.moveForward()
+			end
 		end
 	else
 		print("east")
@@ -727,12 +733,17 @@ function usefulFunctions.x(x, location, facing)-- east west
 			usefulFunctions.eastWest(x,"east")
 		end
 
-		while true do
-			x,_,_ = gps.locate()
-			if x == location then
-				return true, facing
-			end
+		if single then
 			usefulFunctions.moveForward()
+			return true, facing
+		else
+			while true do
+				x,_,_ = gps.locate()
+				if x == location then
+					return true, facing
+				end
+				usefulFunctions.moveForward()
+			end
 		end
 	end
 end
@@ -741,28 +752,39 @@ end
 ---Start location, destination
 ---@param y number the y coordinate of the turtle now
 ---@param location number the coordiante of where the turtle should go
+---@param single boolean?
 ---@return boolean
-function usefulFunctions.y(y, location) -- up down
+function usefulFunctions.y(y, location, single) -- up down
 	if y == location then
 	print("Already at y:" .. location)
 		return true
 	end
+	single = single or false
+
 	if y < location then -- turtle is below the location
 		--print("turtle is below the location")
-		while true do
+		if single then
 			usefulFunctions.moveUp()
-			local _,newY,_ = gps.locate()
-			if newY == location then
-				return true
+		else
+			while true do
+				usefulFunctions.moveUp()
+				local _,newY,_ = gps.locate()
+				if newY == location then
+					return true
+				end
 			end
 		end
 	elseif y > location then -- turtle is above the location
 		--print("turtle is above the location")
-		while true do
+		if single then
 			usefulFunctions.moveDown()
-			local _,newY,_ = gps.locate()
-			if newY == location then
-				return true
+		else
+			while true do
+				usefulFunctions.moveDown()
+				local _,newY,_ = gps.locate()
+				if newY == location then
+					return true
+				end
 			end
 		end
 	end
@@ -778,8 +800,9 @@ end
 ---@param facing string? track which way the turtle is facing. Should be a direction (north,east,south,west) Run either eastWest or northSouth to get the direction
 ---@return boolean
 ---@return any
-function usefulFunctions.z(z, location, facing)-- north south
+function usefulFunctions.z(z, location, facing,single)-- north south
 	facing = facing or ""
+	single = single or false
 	-- tutle is at the corect location
 	if z == location then
 	print("Already at z:" .. location)
@@ -798,12 +821,18 @@ function usefulFunctions.z(z, location, facing)-- north south
 		else
 			usefulFunctions.northSouth(z,"north") -- figure out which way the turtle is facing
 		end
-		while true do
-			_,_,z = gps.locate()
-			if z == location then
-				return true, facing
-			end
+
+		if single then
 			usefulFunctions.moveForward()
+			return true, facing
+		else
+			while true do
+				_,_,z = gps.locate()
+				if z == location then
+					return true, facing
+				end
+				usefulFunctions.moveForward()
+			end
 		end
 	else -- turtle is south of location
 		print("south")
@@ -817,12 +846,18 @@ function usefulFunctions.z(z, location, facing)-- north south
 		else
 			usefulFunctions.northSouth(z,"south") -- figure out which way the turtle is facing
 		end
-		while true do
-			_,_,z = gps.locate()
-			if z == location then
-				return true, facing
-			end
+
+		if single then
 			usefulFunctions.moveForward()
+			return true, facing
+		else
+			while true do
+				_,_,z = gps.locate()
+				if z == location then
+					return true, facing
+				end
+				usefulFunctions.moveForward()
+			end
 		end
 	end
 end
@@ -887,8 +922,8 @@ end
 ---use to find the direction the turtle is facing in the z axis north/south
 ---@param z number the z coordinate of the turtle now
 ---@param direction? string the direction you want the turtle to face
----@return any
----@return integer
+---@return string direction
+---@return integer turned
 function usefulFunctions.northSouth(z,direction)
 	direction = direction or ""
 	-- find the z direction that the turtle is facing

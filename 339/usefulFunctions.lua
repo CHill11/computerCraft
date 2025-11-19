@@ -869,9 +869,6 @@ function usefulFunctions.eastWest(x,direction)
 			turtle.place()
 		end
 	end
-	
-	print("newX:" .. newX .. " X:" .. x)
-	print(newX > x)
 	if newX > x then -- newX is bigger. Went West
 		if direction == "west" then
 			turtle.turnLeft()
@@ -896,7 +893,6 @@ function usefulFunctions.eastWest(x,direction)
 		end
 	end
 end
-
 
 ---use to find the direction the turtle is facing in the z axis north/south
 ---@param z number the z coordinate of the turtle now

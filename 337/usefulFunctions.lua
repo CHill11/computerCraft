@@ -894,7 +894,6 @@ function usefulFunctions.eastWest(x,direction)
 	end
 end
 
-
 ---use to find the direction the turtle is facing in the z axis north/south
 ---@param z number the z coordinate of the turtle now
 ---@param direction? string the direction you want the turtle to face
