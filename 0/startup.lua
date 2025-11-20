@@ -5,8 +5,8 @@ end
 local function getFiles()
 	local server = 207
 	local fileName = {	"buildBridge.lua","buildStairs.lua","buildStairsUp.lua","buildStrip.lua","buildTrack.lua","checkStone.lua","clearWater.lua",
-						"destoryStrip.lua","dig.lua","digDown.lua","down.lua","flatten.lua","forward.lua","getLava.lua",
-						"keepDiggingDown.lua","mineDown.lua","placeTorch.lua","spruceFarm.lua","ultimateExcavate.lua",
+						"destoryStrip.lua","dig.lua","digDown.lua","down.lua","flatten.lua","forward.lua","getLava.lua","itemID.lua",
+						"keepDiggingDown.lua","mineDown.lua","placeTorch.lua","spruceFarm.lua","tunnel.lua","ultimateExcavate.lua",
 						"up.lua","usefulFunctions.lua"}
 	for names in ipairs(fileName) do
 		if shell.run("getfile.lua",server, fileName[names]) then

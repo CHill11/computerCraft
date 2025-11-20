@@ -173,12 +173,21 @@ while true do
 		term.setCursorPos(1,2)
 	end
 end
+--[[
+local userLength = 3
+local userDir = "right"
+local userWidth = 3
+local userDepth = 3--]]
 ---------------------------end of getting user input
 local startX, startY, startZ = gps.locate()--get the staring location
 local facing, turned = usefulFunctions.eastWest(startX)--get the direction the turtle is facing
+--print("starting facing:" .. facing)
+--read()
 for i = 1,turned do --realign the turtle the direction it was placed
 	facing = usefulFunctions.turnLeft(facing)
 end
+--print("Realigned facing:" .. facing)
+--read()
 local startFacing = facing -- the original direction
 local list =   {["minecraft:ancient_debris"] = true,		["minecraft:diamond_ore"] = true,
 				["minecraft:deepslate_diamond_ore"] = true,	["minecraft:gold_ore"] = true,

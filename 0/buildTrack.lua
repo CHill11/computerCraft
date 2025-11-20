@@ -1,89 +1,62 @@
-function getTrack() --looks for normal rail in the inventory
-	for i = 1,16 do
-		turtle.select(i)
-		item = turtle.getItemDetail()
-		if item then
-			if item.name == "minecraft:rail" then
-				turtle.placeDown()
-				return true
-			end	
-		end
-	end
-	return false
-end
-
-function getPowerTrack() --looks for power rail in the inventory
-	for i = 1,16 do
-		turtle.select(i)
-		item = turtle.getItemDetail()
-		if item then
-			if item.name == "minecraft:powered_rail" then
-				turtle.placeDown()
-				return true
-			end	
-		end
-	end
-	return false
-end
-
-function getShroomlight() --looks for shroomlight in the inventory
-	for i = 1,16 do
-		turtle.select(i)
-		item = turtle.getItemDetail()
-		if item then
-			if item.name == "minecraft:shroomlight" then
-				turtle.placeDown()
-				return true
-			end	
-		end
-	end
-	return false
-end
-
-function digDown()
-	if turtle.detectDown() then
-		assert(turtle.digDown())
-		return true
-	end
-	return false
-end
-
-function forward()
-	if turtle.detect() then
-		assert(turtle.dig())
-	end
-	assert(turtle.forward())
-end
+local usefulFunctions = require("usefulFunctions")
 
 print("How far to build track?")
-dist = tonumber(read())
-trackLaid = 0 --The number of tracks laid/blocks moved
-if dist > 265 then
-	print("Too far for me to build. Exiting...")--makes sure the number is not too big so it does not leave the loaded chunks
-else
-	turtle.up()
-	while trackLaid <= dist do --keep laying tacks until user distance is reached
-	print("in while")
-		if getPowerTrack() then --if powered track is in inventory 
-			trackLaid = trackLaid + 1 --count the number of tracks placed
+local dist = tonumber(read())
+print("How many normal rails in between powered rails?")
+local spacingOfRails = tonumber(read())
+print("Should I place a light block every 8 blocks? (Y/N)")
+local lightPlaceStr = read()
+local lightPlace = usefulFunctions.yesNo(string.lower(lightPlaceStr))
+local lightBlock = ""
+if lightPlace then
+	print("What light block do you want to place? (Don't include minecraft))")
+	lightBlock = read()
+	lightBlock = "minecraft:" .. lightBlock
+end
+local moved = 0
+local trackLaid = 0 --The number of tracks laid/blocks moved
+local buildBlock = "minecraft:stone"
+
+usefulFunctions.moveUp()
+while moved <= dist do --keep laying tacks until user distance is reached
+	if usefulFunctions.hasBlock("minecraft:powered_rail") and usefulFunctions.hasBlock("minecraft:redstone_torch") and usefulFunctions.hasBlock(buildBlock) then --if powered track is in inventory 
+		usefulFunctions.moveDown()
+		usefulFunctions.moveDown()
+		usefulFunctions.moveDown()
+		usefulFunctions.placeDown()
+		usefulFunctions.moveUp()
+		usefulFunctions.placeDown(0,"minecraft:redstone_torch")
+		usefulFunctions.moveUp()
+		usefulFunctions.placeDown(0,buildBlock)
+		usefulFunctions.moveUp()
+		_,trackLaid = usefulFunctions.placeDown(trackLaid,"minecraft:powered_rail") --count the number of tracks placed
+	else
+		print("Out of powered rail.")
+		return false
+	end
+	for i = 1, spacingOfRails do --place normal rails
+		if usefulFunctions.hasBlock("minecraft:rail") then --it track is in the inventory
+			_,trackLaid = usefulFunctions.placeDown(trackLaid,"minecraft:rail") --count the number of tacks placed
+			_,moved = usefulFunctions.moveForward(moved)
 		else
-			print("Out of powered rail.")
-		end
-		for i = 1, 8 do --place 7 normal rails
-			if getTrack() then --it track is in the inventory
-				trackLaid = trackLaid + 1 --count the number of tacks placed
-				forward()
-			else
-				print("Out of track.")
-				return false
-			end
-		end
-		turtle.down()
-		digDown()
-		if not getShroomlight() then--if shroomlight in the inventory 
+			print("Out of track.")
 			return false
 		end
-		turtle.up()
+	end
+	if lightPlace then
+		usefulFunctions.moveDown()
+		if lightBlock == "minecraft:shroomlight" then
+			usefulFunctions.digDown()
+			usefulFunctions.placeDown(0,"minecraft:shroomlight")
+		elseif lightBlock == "minecraft:jack_o_lantern" then
+			usefulFunctions.digDown()
+			usefulFunctions.placeDown(0,"minecraft:jack_o_lantern")
+		elseif lightBlock == "minecraft:glowstone" then
+			usefulFunctions.digDown()
+			usefulFunctions.placeDown(0,"minecraft:glowstone")
+		else
+			print("Not a valid light block.")
+		end
 	end
 end
-turtle.down()
+usefulFunctions.moveDown()

@@ -19,7 +19,6 @@ local function selectBlockForReplacement()
     
     -- If the loop finishes without returning true, we are out of blocks.
     print("Warning: Ran out of " .. blockName .. ". Cannot continue placing.")
-	cont = false
     return false
 end
 
@@ -85,7 +84,6 @@ end
 print("Make sure the turtle is placed in the left side of the tunnel")
 print("How far to check walls?")
 dist = tonumber(read())
-cont = true
 if not dist or dist < 1 then
 	print("Error: Invalid distance. Exiting.")
 	return
@@ -103,10 +101,7 @@ else
 	return
 end
 for i = 1, 3 do --Check the floor
-    for o = 1, (dist - 1) do --go the lenght the user specified
-		if cont == false then
-			return
-		end
+    for o = 1, dist do --go the lenght the user specified
         checkDown()
         forward()
         print("i is " .. i)
@@ -132,7 +127,7 @@ for i = 1, 3 do --Check the floor
 end--end of check the floor
 turtle.turnRight() --face the right wall
 for i = 1, 3 do--check right wall
-	for o = 1, (dist - 1) do--go the lenght the user specified
+	for o = 1, dist do--go the lenght the user specified
 		if i % 2 == 1 then--check the direction to turn
 			checkForward()
 			turtle.turnRight()
@@ -147,13 +142,11 @@ for i = 1, 3 do--check right wall
 			checkForward()
 		end
 	end
-	if i <= 2 then
-		turtle.up()
-	end
+	turtle.up()
 end--end of check right wall
 turtle.turnLeft()--face down the tunnel
 for i = 1, 3 do --Check the ceiling
-    for o = 1, (dist - 1) do --go the lenght the user specified
+    for o = 1, dist do --go the lenght the user specified
         checkUp()
         forward()
         print("i is " .. i)
@@ -179,7 +172,7 @@ for i = 1, 3 do --Check the ceiling
 end--end of check the ceiling
 turtle.turnLeft()
 for i = 1, 3 do--check left wall
-	for o = 1, (dist - 1) do--go the lenght the user specified
+	for o = 1, dist do--go the lenght the user specified
 		if i % 2 == 1 then--check the direction to turn
 			checkForward()
 			turtle.turnLeft()
