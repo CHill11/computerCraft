@@ -7,7 +7,7 @@ end
 while not fs.exists("usefulFunctions.lua") do
 	if shell.run("getfile.lua",server, fileName) then
 		print("Updated usefulFunctions.lua")
-	else 
+	else
 		print("Could not update usefulFunctions.lua")
 	end
 end

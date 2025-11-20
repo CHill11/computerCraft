@@ -1,17 +1,16 @@
 local usefulFunctions = {}--the array of functions
 
----comment
+---Trys to move forward and if a block is in the way it digs it
 ---@param moved number?
 ---@param dug number?
----@return boolean
----@return number
----@return number
+---@return boolean success
+---@return number moved
+---@return number dug
 function usefulFunctions.moveForward(moved,dug)
 	moved = moved or 0
 	dug = dug or 0
 	if turtle.detect() then
-		turtle.dig()
-		dug = dug + 1
+		dug = usefulFunctions.dig(dug)
 	end
 	if turtle.forward() then
 		moved = moved + 1
@@ -21,18 +20,17 @@ function usefulFunctions.moveForward(moved,dug)
 	end
 end
 
----comment
+---Trys to move up and if a block is in the way it digs it
 ---@param moved number?
 ---@param dug number?
----@return boolean
----@return number
----@return number
+---@return boolean success
+---@return number moved
+---@return number dug
 function usefulFunctions.moveUp(moved,dug)
 	moved = moved or 0
 	dug = dug or 0
 	if turtle.detectUp() then
-		turtle.digUp()
-		dug = dug + 1
+		dug = usefulFunctions.digUp(dug)
 	end
 	if turtle.up() then
 		moved = moved + 1
@@ -42,18 +40,17 @@ function usefulFunctions.moveUp(moved,dug)
 	end
 end
 
----comment
+---Trys to move down and if a block is in the way it digs it
 ---@param moved number?
 ---@param dug number?
----@return boolean
----@return number
----@return number
+---@return boolean success
+---@return number moved
+---@return number dug
 function usefulFunctions.moveDown(moved,dug)
 	moved = moved or 0
 	dug = dug or 0
 	if turtle.detectDown() then
-		assert(turtle.digDown())
-		dug = dug + 1
+		dug = usefulFunctions.digDown(dug)
 	end
 	if turtle.down() then
 		moved = moved + 1
@@ -63,10 +60,10 @@ function usefulFunctions.moveDown(moved,dug)
 	end
 end
 
----comment
+---Moves back
 ---@param moved number?
----@return boolean
----@return number
+---@return boolean success
+---@return number moved
 function usefulFunctions.moveBack(moved)
 	moved = moved or 0
 	if turtle.back() then
@@ -77,49 +74,49 @@ function usefulFunctions.moveBack(moved)
 	end
 end
 
----
----@param num number?
----@return number
-function usefulFunctions.dig(num)
-	num = num or 0
+---Digs the block in front
+---@param dug number?
+---@return number dug
+function usefulFunctions.dig(dug)
+	dug = dug or 0
 	while turtle.detect() do
 		turtle.dig()
-		num = num + 1
+		dug = dug + 1
 		os.sleep(0.3)
 	end
-	return num
+	return dug
 end
 
----comment
----@param num number?
----@return number
-function usefulFunctions.digUp(num)
-	num = num or 0
+---commentDigs the block up
+---@param dug number?
+---@return number dug
+function usefulFunctions.digUp(dug)
+	dug = dug or 0
 	while turtle.detectUp() do
 		turtle.digUp()
-		num = num + 1
+		dug = dug + 1
 		os.sleep(0.3)
 	end
-	return num
+	return dug
 end
 
 ---comment
----@param num number?
----@return number
-function usefulFunctions.digDown(num)
-	num = num or 0
+---@param dug number?
+---@return number dug
+function usefulFunctions.digDown(dug)
+	dug = dug or 0
 	if turtle.detectDown() then
 		turtle.digDown()
-		num = num + 1
-		return num
+		dug = dug + 1
+		return dug
 	end
 	return 0
 end
 
----comment
+---Emptys the inventory of a turtle and drops it in front
 ---@param start number? What slot to start emptying from
 ---@param stop number? What slot to stop emptying at
----@return boolean
+---@return boolean success
 function usefulFunctions.emptyInv(start, stop)
 	start = start or 1
 	stop = stop or 16
@@ -130,10 +127,10 @@ function usefulFunctions.emptyInv(start, stop)
 	return true
 end
 
----comment
+---Emptys the inventory of a turtle and drops it in down
 ---@param start number? What slot to start emptying from
 ---@param stop number? What slot to stop emptying at
----@return boolean
+---@return boolean success
 function usefulFunctions.emptyInvDown(start, stop)
 	start = start or 1
 	stop = stop or 16
@@ -144,9 +141,9 @@ function usefulFunctions.emptyInvDown(start, stop)
 	return true
 end
 
----comment
+---Turns the turtle around
 ---@param facing string? The direction the turtle is facing
----@return string
+---@return string facing
 function usefulFunctions.turnAround(facing)
 	--print("in turnAround. Facing:" .. tostring(facing))
     facing = usefulFunctions.turnRight(facing)
@@ -154,8 +151,8 @@ function usefulFunctions.turnAround(facing)
 	return facing
 end
 
----comment
----@param block string? The name of the block you want
+---Gets a block to place from the inventory
+---@param block string? The name of the block you want. If left blank then uses a list
 ---@return boolean
 function usefulFunctions.hasBlock(block)
     block = block or ""
@@ -193,6 +190,7 @@ function usefulFunctions.hasBlock(block)
 		"minecraft:deepslate",
 		"minecraft:cobbled_deepslate",
 		"minecraft:netherrack",
+		"minecraft:andesite",
 
 		--Misc
         "minecraft:dirt",
@@ -224,96 +222,97 @@ function usefulFunctions.hasBlock(block)
     return false
 end
 
----comment
----@param num number? Number of blocks placed
----@return boolean
----@return number
-function usefulFunctions.placeLeft(num, blockName)
-	num = num or 0
+---Place block left
+---@param placed number? Number of blocks placed
+---@param blockName string? Name of block to place
+---@return boolean success
+---@return number placed
+function usefulFunctions.placeLeft(placed, blockName)
+	placed = placed or 0
     if usefulFunctions.hasBlock(blockName) then
 		turtle.turnLeft()
         turtle.place()
 		turtle.turnRight()
-		num = num + 1
+		placed = placed + 1
     else
         print("Out of blocks.")
-        return false, 0
+        return false, placed
     end
-    return true, num
+    return true, placed
 end
 
----comment
----@param num number? Number of blocks placed
----@param blockName string? the name of the block you want to place
----@return boolean
----@return number
-function usefulFunctions.placeRight(num, blockName)
-	num = num or 0
+---Place block right
+---@param placed number? Number of blocks placed
+---@param blockName string? Name of block to place
+---@return boolean success
+---@return number placed
+function usefulFunctions.placeRight(placed, blockName)
+	placed = placed or 0
 	blockName = blockName or ""
     if usefulFunctions.hasBlock(blockName) then
 		turtle.turnRight()
         turtle.place()
 		turtle.turnLeft()
-		num = num + 1
+		placed = placed + 1
     else
         print("Out of blocks.")
-        return false, 0
+        return false, placed
     end
-    return true, num
+    return true, placed
 end
 
----comment
----@param num number? Number of blocks placed
----@param blockName string? the name of the block you want to place
----@return boolean
----@return number
-function usefulFunctions.placeUp(num, blockName)
-	num = num or 0
+---Place block up
+---@param placed number? Number of blocks placed
+---@param blockName string? Name of block to place
+---@return boolean success
+---@return number placed
+function usefulFunctions.placeUp(placed, blockName)
+	placed = placed or 0
 	blockName = blockName or ""
     if usefulFunctions.hasBlock(blockName) then
         turtle.placeUp()
-		num = num + 1
+		placed = placed + 1
     else
         print("Out of blocks.")
-        return false, 0
+        return false, placed
     end
-    return true, num
+    return true, placed
 end
 
----comment
----@param num number? Number of blocks placed
+---Place block up
+---@param placed number? Number of blocks placed
 ---@param blockName string? the name of the block you want to place
----@return boolean
----@return number
-function usefulFunctions.placeDown(num, blockName)
-	num = num or 0
+---@return boolean success
+---@return number placed
+function usefulFunctions.placeDown(placed, blockName)
+	placed = placed or 0
 	blockName = blockName or ""
     if usefulFunctions.hasBlock(blockName) then
         turtle.placeDown()
-		num = num + 1
+		placed = placed + 1
     else
         print("Out of blocks.")
-        return false, num
+        return false, placed
     end
-    return true, num
+    return true, placed
 end
 
----comment
----@param num number? Number of blocks placed
+---Placed block front
+---@param placed number? Number of blocks placed
 ---@param blockName string? the name of the block you want to place
----@return boolean
----@return number
-function usefulFunctions.place(num, blockName)
-	num = num or 0
+---@return boolean success
+---@return number placed
+function usefulFunctions.place(placed, blockName)
+	placed = placed or 0
 	blockName = blockName or ""
     if usefulFunctions.hasBlock(blockName) then
         turtle.place()
-		num = num + 1
+		placed = placed + 1
     else
         print("Out of blocks.")
-        return false, 0
+        return false, placed
     end
-    return true, num
+    return true, placed
 end
 
 ---Used to make sure the filter turtle are facing the crate
@@ -699,12 +698,7 @@ function usefulFunctions.x(x, location, facing,single)-- east west
 	if x > location then
 		print("west")
 		if facing == "north" or facing == "east" or facing == "south" or facing == "west" then
-			while true do
-				facing = usefulFunctions.turnRight(facing)
-				if facing == "west" then
-					break
-				end
-			end
+			facing = usefulFunctions.faceDirection(facing,"west")
 		else
 			usefulFunctions.eastWest(x,"west")
 		end
@@ -723,12 +717,7 @@ function usefulFunctions.x(x, location, facing,single)-- east west
 	else
 		print("east")
 		if facing  == "north" or facing == "east" or facing == "south" or facing == "west" then
-			while true do
-				facing = usefulFunctions.turnRight(facing)
-				if facing == "east" then
-					break
-				end
-			end
+			facing = usefulFunctions.faceDirection(facing,"east")
 		else
 			usefulFunctions.eastWest(x,"east")
 		end
@@ -800,7 +789,7 @@ end
 ---@param facing string? track which way the turtle is facing. Should be a direction (north,east,south,west) Run either eastWest or northSouth to get the direction
 ---@return boolean
 ---@return any
-function usefulFunctions.z(z, location, facing,single)-- north south
+function usefulFunctions.z(z, location, facing, single)-- north south
 	facing = facing or ""
 	single = single or false
 	-- tutle is at the corect location
@@ -812,12 +801,7 @@ function usefulFunctions.z(z, location, facing,single)-- north south
 	if z > location then -- turtle is north of location
 		print("north")
 		if facing == "north" or facing == "east" or facing == "south" or facing == "west" then -- turtle knows which way it is facing
-			while true do
-				facing = usefulFunctions.turnRight(facing)
-				if facing == "north" then
-					break
-				end
-			end
+			facing = usefulFunctions.faceDirection(facing,"north")
 		else
 			usefulFunctions.northSouth(z,"north") -- figure out which way the turtle is facing
 		end
@@ -837,12 +821,7 @@ function usefulFunctions.z(z, location, facing,single)-- north south
 	else -- turtle is south of location
 		print("south")
 		if facing == "north" or facing == "east" or facing == "south" or facing == "west" then -- turtle knows which way it is facing
-			while true do
-				facing = usefulFunctions.turnRight(facing)
-				if facing == "south" then
-					break
-				end
-			end
+			facing = usefulFunctions.faceDirection(facing,"south")
 		else
 			usefulFunctions.northSouth(z,"south") -- figure out which way the turtle is facing
 		end
@@ -871,7 +850,6 @@ end
 function usefulFunctions.eastWest(x,direction)
 	direction = direction or "" 
 	-- find the x direction that the turtle is facing
-	x = usefulFunctions.reverseSign(x)
 
 	local turned = 0
 	local newX = x
@@ -885,8 +863,6 @@ function usefulFunctions.eastWest(x,direction)
 		end
 		usefulFunctions.moveForward()
 		newX,_,_ = gps.locate()
-		newX = newX^2
-		newX = math.sqrt(newX)
 		turtle.back()
 		if digAndReplace then
 			turtle.select(10)
@@ -894,30 +870,29 @@ function usefulFunctions.eastWest(x,direction)
 		end
 	end
 	if newX > x then -- newX is bigger. Went West
-		if direction == "east" then
+		if direction == "west" then
 			turtle.turnLeft()
 			turtle.turnLeft()
 			--print("Facing East")
 			return direction, turned
 		else
-			direction = "west"
+			direction = "east"
 			--print("Facing West")
 			return direction, turned
 		end
 	else -- newX is smaller. Went East
-		if direction == "west" then
+		if direction == "east" then
 			turtle.turnLeft()
 			turtle.turnLeft()
 			--print("Facing West")
 			return direction, turned
 		else
-			direction = "east"
+			direction = "west"
 			--print("Facing East")
 			return direction, turned
 		end
 	end
 end
-
 
 ---use to find the direction the turtle is facing in the z axis north/south
 ---@param z number the z coordinate of the turtle now
@@ -927,7 +902,6 @@ end
 function usefulFunctions.northSouth(z,direction)
 	direction = direction or ""
 	-- find the z direction that the turtle is facing
-	z = usefulFunctions.reverseSign(z)
 
 	local turned = 0
 	local newz = z
@@ -941,8 +915,6 @@ function usefulFunctions.northSouth(z,direction)
 		end
 		usefulFunctions.moveForward()
 		_,_,newz = gps.locate()
-		newz = newz^2
-		newz = math.sqrt(newz)
 		turtle.back()
 		if digAndReplace then
 			turtle.select(10)

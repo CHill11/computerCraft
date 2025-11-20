@@ -1,9 +1,8 @@
-usefulFunctions = require("usefulFunctions")
+local usefulFunctions = require("usefulFunctions")
 
 local length = 15
 local width = 26
 for o = 1,width do
-    
     for i = 1,length do
         usefulFunctions.moveForward()
         usefulFunctions.placeDown(0, "minecraft:quartz_slab")
@@ -20,4 +19,3 @@ for o = 1,width do
         turtle.turnLeft()
     end
 end
-    

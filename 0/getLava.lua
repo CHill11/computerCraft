@@ -61,5 +61,6 @@ while i <= moveBack do -- move back to the starting location
 		end
 	end
 end
+
 fuelLevel = turtle.getFuelLevel()
 print("Finish! Fuel level is " .. fuelLevel)

@@ -1,52 +1,52 @@
 --id = 253
-function timer()-- the timeout timer for downloading usefulFunctions
+ local function timer()-- the timeout timer for downloading usefulFunctions
 	sleep(3)
 end
 ------------------functions for the fileserver------------------
-function getFileUsefulFunctionUpdated()
+local function getFileUsefulFunctionUpdated()
 	shell.run("getfile",207,"usefulFunctions.lua")
 	if fs.exists(shell.resolve("usefulFunctions.lua")) then
-		gotFileUsefulFunction = true
+		GOTFILE_USEFULFUNCTIONS = true
 	end
 end
 
-function getFileRowFilterUpdate()
+local function getFileRowFilterUpdate()
 	shell.run("getfile",207,"rowFilter.lua")
 	if fs.exists(shell.resolve("rowFilter.lua")) then
-		gotFileRowFilter = true
+		GOTFILE_ROW_FILTER = true
 	end
 end
 
-function getFileStartFileShare()
+local function getFileStartFileShare()
 	shell.run("getfile",207,"startFileShare.lua")
 	if fs.exists(shell.resolve("startFileShare.lua")) then
-		gotStartFileShare = true
+		GOT_START_FILESHARE = true
 	end
 end
 
-function getFileItemsToFilterUpdate()
+local function getFileItemsToFilterUpdate()
 	shell.run("getfile",207,"itemsToFilter.lua")
-	gotFileItemsToFilter = true
+	GOTFILE_ITEMS_TO_FILTER = true
 end
 
 ------------------functions for the filter turtles---------------------------
-function getFileUsefulFunction()
+local function getFileUsefulFunction()
 	shell.run("getfile",253,"usefulFunctions.lua")
 	if fs.exists(shell.resolve("usefulFunctions.lua")) then
-		gotFileUsefulFunction = true
+		GOTFILE_USEFULFUNCTIONS = true
 	end
 end
 
-function getFileRowFilter()
+local function getFileRowFilter()
 	shell.run("getfile",253,"rowFilter.lua")
 	if fs.exists(shell.resolve("rowFilter.lua")) then
-		gotFileRowFilter = true
+		GOTFILE_ROW_FILTER = true
 	end
 end
 
-function getFileItemsToFilter()
+local function getFileItemsToFilter()
 	shell.run("getfile",253,"itemsToFilter.lua")
-	gotFileItemsToFilter = true
+	GOTFILE_ITEMS_TO_FILTER = true
 end
 
 ------------------main------------------------------------
@@ -59,28 +59,28 @@ if term.isColor() then
 			print("Error:Could not delete usefulFunctions")
 		end
 	end
-	while not gotFileUsefulFunction do
-		gotFileUsefulFunction = false
+	while not GOTFILE_USEFULFUNCTIONS do
+		GOTFILE_USEFULFUNCTIONS = false
 		parallel.waitForAny(getFileUsefulFunctionUpdated, timer)-- the download for usefulFunctions or timeout
 	end
-	while not gotFileRowFilter do
-		gotFileRowFilter = false
+	while not GOTFILE_ROW_FILTER do
+		GOTFILE_ROW_FILTER = false
 		parallel.waitForAny(getFileRowFilterUpdate, timer)-- the download for usefulFunctions or timeout
 	end
-	
-	gotStartFileShare = fs.exists(shell.resolve("startFileShare.lua"))
-	while not gotStartFileShare do
-		gotStartFileShare = false
+
+	GOT_START_FILESHARE = fs.exists(shell.resolve("startFileShare.lua"))
+	while not GOT_START_FILESHARE do
+		GOT_START_FILESHARE = false
 		parallel.waitForAny(getFileStartFileShare, timer)-- the download for usefulFunctions or timeout
 	end
-	
+
 	if not fs.exists(shell.resolve("itemsToFilter.lua")) then-- checks to see if the file itemsToFilter exists
-		gotFileItemsToFilter = false
-		while not gotFileItemsToFilter do
+		GOTFILE_ITEMS_TO_FILTER = false
+		while not GOTFILE_ITEMS_TO_FILTER do
 			parallel.waitForAny(getFileItemsToFilterUpdate, timer)-- the download for itemsToFilter or timeout
 		end
 	end
-	
+
 	shell.run("startFileShare")
 else
 	if fs.exists(shell.resolve("usefulFunctions.lua")) then
@@ -99,20 +99,20 @@ else
 			print("Error:Could not delete rowFilter")
 		end
 	end
-	gotFileUsefulFunction = false
-	gotFileRowFilter = false
+	GOTFILE_USEFULFUNCTIONS = false
+	GOTFILE_ROW_FILTER = false
 
-	while not gotFileUsefulFunction do
+	while not GOTFILE_USEFULFUNCTIONS do
 		parallel.waitForAny(getFileUsefulFunction, timer)-- the download for usefulFunctions or timeout
 	end
 
-	while not gotFileRowFilter do
+	while not GOTFILE_ROW_FILTER do
 		parallel.waitForAny(getFileRowFilter, timer)-- the download for rowFilter or timeout
 	end
 
 	if not fs.exists(shell.resolve("itemsToFilter.lua")) then-- checks to see if the file itemsToFilter exists
-		gotFileItemsToFilter = false
-		while not gotFileItemsToFilter do
+		GOTFILE_ITEMS_TO_FILTER = false
+		while not GOTFILE_ITEMS_TO_FILTER do
 			parallel.waitForAny(getFileItemsToFilter, timer)-- the download for itemsToFilter or timeout
 		end
 	end

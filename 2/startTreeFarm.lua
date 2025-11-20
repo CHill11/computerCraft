@@ -1,7 +1,6 @@
 local usefulFunctions = require("usefulFunctions")
 
-local x,y,z  = nil 
-
+local x,y,z  = gps.locate(3)
 while x == nil do
 	x,y,z = gps.locate(3)
 	sleep(3)
