@@ -1,9 +1,10 @@
---id = 208
+--id = 
 local turtleID = os.getComputerID()
 
 print("My turtle ID is " .. turtleID .. ".")
-print("Started...")
+print("Starting...")
+
 while true do
 	os.pullEvent("turtle_inventory")
-	turtle.drop()
+	turtle.dropDown()
 end

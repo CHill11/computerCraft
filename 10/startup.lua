@@ -1,122 +1,75 @@
---id = 10
-mainCommandComputer = 207
-rowCommandComputer = 253
-function timer()-- the timeout timer for downloading usefulFunctions
-	sleep(3)
+--id = 
+MAIN_COMMAND_COMPUTER = 207
+ROW_COMMAND_COMPUTER = nil
+
+local function timer()-- the timeout timer for downloading usefulFunctions
+	sleep()
 end
-------------------functions for the fileserver------------------
-function getFileUsefulFunctionUpdated()
-	shell.run("getfile",mainCommandComputer,"usefulFunctions.lua")
-	if fs.exists(shell.resolve("usefulFunctions.lua")) then
-		gotFileUsefulFunction = true
+
+local function serverGetFiles()
+	local serverFilesToUpdate = require("serverFilesToUpdate")
+	local fileName = serverFilesToUpdate()
+	for _,names in ipairs(fileName) do
+		if shell.run("getfile.lua",MAIN_COMMAND_COMPUTER, names) then
+			print("Updated ", names)
+		else
+			print("Could not update ", names)
+		end
 	end
 end
 
-function getFileRowFilterUpdate()
-	shell.run("getfile",mainCommandComputer,"rowFilter.lua")
-	if fs.exists(shell.resolve("rowFilter.lua")) then
-		gotFileRowFilter = true
+local function rowGetFiles()
+	local rowFilesToUpdate = require("rowFilesToUpdate")
+	local fileName = rowFilesToUpdate.files()
+	for _,names in ipairs(fileName) do
+		if shell.run("getfile.lua",MAIN_COMMAND_COMPUTER, names) then
+			print("Updated " .. names)
+		else
+			print("Error updateing " .. names)
+		end
 	end
-end
-
-function getFileStartFileShare()
-	shell.run("getfile",mainCommandComputer,"startFileShare.lua")
-	if fs.exists(shell.resolve("startFileShare.lua")) then
-		gotStartFileShare = true
-	end
-end
-
-function getFileItemsToFilterUpdate()
-	shell.run("getfile",mainCommandComputer,"itemsToFilter.lua")
-	gotFileItemsToFilter = true
-end
-
-------------------functions for the filter turtles---------------------------
-function getFileUsefulFunction()
-	shell.run("getfile",rowCommandComputer,"usefulFunctions.lua")
-	if fs.exists(shell.resolve("usefulFunctions.lua")) then
-		gotFileUsefulFunction = true
-	end
-end
-
-function getFileRowFilter()
-	shell.run("getfile",rowCommandComputer,"rowFilter.lua")
-	if fs.exists(shell.resolve("rowFilter.lua")) then
-		gotFileRowFilter = true
-	end
-end
-
-function getFileItemsToFilter()
-	shell.run("getfile",rowCommandComputer,"itemsToFilter.lua")
-	gotFileItemsToFilter = true
 end
 
 ------------------main------------------------------------
-if term.isColor() then
-	if fs.exists(shell.resolve("usefulFunctions.lua")) then
-		fs.delete(shell.resolve("usefulFunctions.lua"))
-		if not fs.exists(shell.resolve("usefulFunctions.lua")) then
-			print("Deleted usefulFunctions")
-		else 
-			print("Error:Could not delete usefulFunctions")
-		end
-	end
-	while not gotFileUsefulFunction do
-		gotFileUsefulFunction = false
-		parallel.waitForAny(getFileUsefulFunctionUpdated, timer)-- the download for usefulFunctions or timeout
-	end
-	while not gotFileRowFilter do
-		gotFileRowFilter = false
-		parallel.waitForAny(getFileRowFilterUpdate, timer)-- the download for usefulFunctions or timeout
-	end
-	
-	gotStartFileShare = fs.exists(shell.resolve("startFileShare.lua"))
-	while not gotStartFileShare do
-		gotStartFileShare = false
-		parallel.waitForAny(getFileStartFileShare, timer)-- the download for usefulFunctions or timeout
-	end
-	
-	if not fs.exists(shell.resolve("itemsToFilter.lua")) then-- checks to see if the file itemsToFilter exists
-		gotFileItemsToFilter = false
-		while not gotFileItemsToFilter do
-			parallel.waitForAny(getFileItemsToFilterUpdate, timer)-- the download for itemsToFilter or timeout
-		end
-	end
-	
-	shell.run("startFileShare")
-else
-	if fs.exists(shell.resolve("usefulFunctions.lua")) then
-		fs.delete(shell.resolve("usefulFunctions.lua"))
-		if not fs.exists(shell.resolve("usefulFunctions.lua")) then
-			print("Deleted usefulFunctions")
-		else 
-			print("Error:Could not delete usefulFunctions")
-		end
-	end
-	if fs.exists(shell.resolve("rowFilter.lua")) then
-		fs.delete(shell.resolve("rowFilter.lua"))
-		if not fs.exists(shell.resolve("rowFilter.lua")) then
-			print("Deleted rowFilter")
+if term.isColor() then -- server update
+	repeat
+		local success = false
+		if fs.exists(shell.resolve("serverFilesToUpdate.lua")) then
+			local firstToFinish = parallel.waitForAny(serverGetFiles,timer)
+			if firstToFinish == 1 then
+				shell.run("startFileShare")
+				success = true
+			end
 		else
-			print("Error:Could not delete rowFilter")
+			repeat
+				local gotServerFilesToUpdate = false
+				shell.run("getfile.lua",MAIN_COMMAND_COMPUTER,"serverFilesToUpdate.lua")
+				if fs.exists(shell.resolve("serverFilesToUpdate.lua")) then
+					gotServerFilesToUpdate = true
+				end
+			until gotServerFilesToUpdate == true
 		end
-	end
-	gotFileUsefulFunction = false
-	gotFileRowFilter = false
 
-	while not gotFileUsefulFunction do
-		parallel.waitForAny(getFileUsefulFunction, timer)-- the download for usefulFunctions or timeout
-	end
-
-	while not gotFileRowFilter do
-		parallel.waitForAny(getFileRowFilter, timer)-- the download for rowFilter or timeout
-	end
-
-	if not fs.exists(shell.resolve("itemsToFilter.lua")) then-- checks to see if the file itemsToFilter exists
-		gotFileItemsToFilter = false
-		while not gotFileItemsToFilter do
-			parallel.waitForAny(getFileItemsToFilter, timer)-- the download for itemsToFilter or timeout
+		----finish making the file itemsToFilter with the proper rowserver id 
+	until success == true
+else-- row update
+	repeat
+		local success = false
+		if fs.exists(shell.resolve("rowFilesToUpdate.lua")) then
+			local firstToFinish = parallel.waitForAny(rowGetFiles,timer)
+			if firstToFinish == 1 then
+				shell.run("startFileShare")
+				success = true
+			end
+		else
+			repeat
+				local gotRowFilesToUpdate = false
+				shell.run("getfile.lua",MAIN_COMMAND_COMPUTER,"rowFilesToUpdate.lua")
+				if fs.exists(shell.resolve("rowFilesToUpdate.lua")) then
+					gotRowFilesToUpdate = true
+				end
+			until gotRowFilesToUpdate == true
 		end
-	end
+	until success == true
 	shell.run("rowFilter")
 end

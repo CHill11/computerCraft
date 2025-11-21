@@ -279,7 +279,7 @@ function usefulFunctions.placeUp(placed, blockName)
     return true, placed
 end
 
----Place block up
+---Place block down
 ---@param placed number? Number of blocks placed
 ---@param blockName string? the name of the block you want to place
 ---@return boolean success

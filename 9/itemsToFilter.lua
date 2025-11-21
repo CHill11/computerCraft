@@ -4,7 +4,7 @@ function itemsToFilter.items()
 	local items = {top = "minecraft:oak_log",middle = "minecraft:stick", bottom = "minecraft:coal"}
 	local turtleToMessage = 162
 	local spotInRow = 1
-	local pass = "left"
+	local pass = "left" --left or right
 	return items, turtleToMessage, spotInRow, pass
 end
 

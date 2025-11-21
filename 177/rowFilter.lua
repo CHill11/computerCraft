@@ -1,6 +1,6 @@
 local turtleID = os.getComputerID()-- get the computers id
 rs.setOutput("bottom",true)-- set the bottom redstone signel on 
-hopper = peripheral.wrap("bottom")-- set the hopper as a readable object
+local hopper = peripheral.wrap("bottom")-- set the hopper as a readable object
 if rednet.isOpen() then-- makes sure the turtle rednet is open
 	print("Rednet is open.")
 else
