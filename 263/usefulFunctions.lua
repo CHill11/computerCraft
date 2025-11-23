@@ -1096,5 +1096,50 @@ function usefulFunctions.printWrap(text)
     end
 end
 
+function usefulFunctions.wait(secs,intervals)
+	local secs = secs or 4
+	local intervalse = intervals or 4
+	local secsDivided = secs / intervals
+	for i = 1,intervals do
+		print(intervals)
+		intervals = intervals - 1
+		os.sleep(secsDivided)
+	end
+end
 --------------------------------end of display functions------------------------------
+
+
+-----------------------------Functions to modify a file-------------------------------
+
+---comment
+---@param fileName string
+---@param searchPattern string
+---@param replaceString string
+---@return boolean worked
+function usefulFunctions.modifyFile(fileName,searchPattern,replaceString)
+local oldFileHandle, err = fs.open(shell.resolve(fileName),"r") -- open the file for reading
+if not oldFileHandle then -- make sure the file is open
+    print("Error reading file. Error " .. err)
+	return false
+end
+local oldFile = oldFileHandle.readAll() -- read all the file
+oldFileHandle.close()
+local newContent, count = string.gsub(oldFile,searchPattern,replaceString)
+if count > 0 then -- if gsub changed the file then count will reflet the number changed
+    print("Successfully changed file.")
+
+    local writeHandle,err = fs.open(shell.resolve(fileName),"w")
+    if not writeHandle then
+        print("Error writing to file. Error " .. err)
+        return false
+    end
+    writeHandle.write(tostring(newContent))
+    writeHandle.close()
+else
+    print("Unable to find the string.")
+	return false
+end
+print("passed adding id")
+return true
+end
 return usefulFunctions

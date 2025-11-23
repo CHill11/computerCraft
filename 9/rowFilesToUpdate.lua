@@ -1,6 +1,6 @@
 local rowFilesToUpdate = {}
 
-function rowFilesToUpdate.files()
+function rowFilesToUpdate.Files()
     return {"rowFilter.lua","rowFilesToUpdate.lua","usefulFunctions.lua"}
 end
 
