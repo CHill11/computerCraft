@@ -1,0 +1,1 @@
+return {"chiseled_sandstone","cut_sandstone_slab","smooth_sandstone_stairs","red_sand","red_sandstone_slab","smooth_red_sandstone","podzol","sculk_sensor","calibrated_sculk_sensor"}

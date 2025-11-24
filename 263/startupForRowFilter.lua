@@ -1,6 +1,6 @@
 --id = 
 MAIN_COMMAND_COMPUTER = 207
-ROW_COMMAND_COMPUTER = nil
+ROW_COMMAND_COMPUTER = 263
 
 local function timer()-- the timeout timer for downloading usefulFunctions
 	sleep(5)
@@ -50,13 +50,11 @@ if term.isColor() then -- server update
 				end
 			until gotServerFilesToUpdate == true
 		end
-
-		----finish making the file itemsToFilter with the proper rowserver id 
-		
 	until success == true
 	term.clear()
 	term.setCursorPos(1,1)
 	shell.run("startFileShare")
+
 else-- row update
 	repeat
 		os.sleep(3)
@@ -78,5 +76,6 @@ else-- row update
 	until success == true
 	term.clear()
 	term.setCursorPos(1,1)
+	usefulFunctions.wait(2)
 	shell.run("rowFilter")
 end

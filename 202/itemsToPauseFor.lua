@@ -1,0 +1,1 @@
+return {"polished_diorite_slab","chiseled_tuff","tuff_brick_slab","polished_andesite_slab","mossy_cobblestone_slab","mossy_stone_brick_slab","mossy_stone_brick_wall","stone_brick_slab","smooth_stone_slab"}

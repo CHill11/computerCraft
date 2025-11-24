@@ -1,0 +1,1 @@
+return {"nether_wart","ghast_tear","sugar","spider_eye","dragon_breath","slime_block","wither_skeleton_skull","magma_block","book"}

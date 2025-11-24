@@ -1,0 +1,1 @@
+return {"decorated_pot","cut_copper_stairs","waxed_cut_copper_stairs","copper_grate","waxed_copper_grate","polished_tuff","polished_tuff_slab","polished_tuff_stairs","polished_tuff_wall"}

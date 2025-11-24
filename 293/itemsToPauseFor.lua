@@ -1,0 +1,1 @@
+return {"red_stained_glass","black_stained_glass","purple_stained_glass","yellow_stained_glass","magenta_stained_glass","azalea","azalea_leaves","cactus_flower","chiseled_stone_bricks"}

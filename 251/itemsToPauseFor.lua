@@ -1,0 +1,1 @@
+return {"pumpkin_seeds","cocoa_beans","ladder","scaffolding","sugar_cane","cobblestone_slab","diamond_horse_armor","hopper","dispenser"}

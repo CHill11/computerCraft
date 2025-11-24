@@ -1096,12 +1096,15 @@ function usefulFunctions.printWrap(text)
     end
 end
 
+---Wait a specified ammount of time desplaying the remaing seconds
+---@param secs number
+---@param intervals number
 function usefulFunctions.wait(secs,intervals)
-	local secs = secs or 4
-	local intervalse = intervals or 4
+	secs = secs or 1
+	intervals = intervals or 4
 	local secsDivided = secs / intervals
 	for i = 1,intervals do
-		print(intervals)
+		print(math.floor(intervals))
 		intervals = intervals - 1
 		os.sleep(secsDivided)
 	end

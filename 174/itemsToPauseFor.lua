@@ -1,0 +1,1 @@
+return {"oak_slab","spruce_slab","birch_slab","jungle_slab","acacia_slab","dark_oak_slab","mangrove_slab","cherry_slab","pale_oak_slab"}

@@ -1,0 +1,1 @@
+return {"red_wool","black_wool","purple_wool","yellow_wool","magenta_wool","iron_door","acacia_door","jungle_door","cherry_door"}

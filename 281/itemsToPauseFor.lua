@@ -1,0 +1,1 @@
+return {"red_stained_glass_pane","black_stained_glass_pane","purple_stained_glass_pane","yellow_stained_glass_pane","magenta_stained_glass_pane","spruce_fence","acacia_fence","cherry_fence","sticky_piston"}

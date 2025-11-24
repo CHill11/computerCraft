@@ -1,0 +1,1 @@
+return {"red_dye","black_dye","purple_dye","yellow_dye","magenta_dye","redstone_lamp","repeater","grass_block","gold_nugget"}

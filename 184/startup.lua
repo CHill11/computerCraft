@@ -1,8 +1,13 @@
---id = 
+print(fs.exists(shell.resolve("usefulFunctions.lua")))
+if not fs.exists(shell.resolve("usefulFunctions.lua")) then
+	shell.run("getfile",207,"usefulFunctions.lua")
+end
+
+local usefulFunctions = require("usefulFunctions")
 local turtleID = os.getComputerID()
 
 print("My turtle ID is " .. turtleID .. ".")
-sleep(10)
+usefulFunctions.wait(10,10)
 print("Started...")
 
 peripheral.find("modem", rednet.open)
@@ -12,8 +17,13 @@ else
 	print("Could not open rednet.")
 	return
 end
+
 local itemNames = {}
-local itemsToPauseForRaw = {"music_disc_13","music_disc_cat","golden_apple","furnace","lodestone","chest_minecart","resin_bricks","resin_brick_stairs","resin_brick"}
+
+if not fs.exists(shell.resolve("itemsToPauseFor.lua")) then
+	shell.run("getfile", 207, "itemsToPauseFor.lua")
+end
+local itemsToPauseForRaw = require("itemsToPauseFor")
 
 for _, name in ipairs(itemsToPauseForRaw) do
 	itemNames["minecraft:" .. name] = true -- Uses a lookup table (hash map) for fast checking
@@ -35,8 +45,8 @@ while true do
 		turtle.drop()
 		while pause do
 			print("Pausing...")
-			local event, id, message = os.pullEvent("rednet_message")
-			if message == "sort" then
+			local event, id, message, protocal = os.pullEvent("rednet_message")
+			if protocal == "filter" and message == "sort" then
 				print("Resuming...")
 				break
 			end

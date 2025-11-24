@@ -1,0 +1,1 @@
+return {"rabbit_hide","leather","slime_ball","flowering_azalea_leaves","nautilus_shell","egg","brown_egg","blue_egg","armadillo_scute"}

@@ -1,0 +1,1 @@
+return {"crimson_planks","warped_planks","warped_wart_block","nether_wart_block","nether_brick_fence","nether_brick_slab","crimson_fungus","warped_fungus","shroomlight"}

@@ -1,0 +1,1 @@
+return {"oak_trapdoor","spruce_trapdoor","birch_trapdoor","jungle_trapdoor","acacia_trapdoor","dark_oak_trapdoor","mangrove_trapdoor","cherry_trapdoor","pale_oak_trapdoor"}

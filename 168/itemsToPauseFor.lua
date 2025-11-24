@@ -1,0 +1,1 @@
+return {"oak_leaves","pale_oak_leaves","cherry_leaves","mangrove_leaves","dark_oak_leaves","acacia_leaves","jungle_leaves","birch_leaves","spruce_leaves"}

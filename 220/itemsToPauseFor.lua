@@ -1,0 +1,1 @@
+return {"red_terracotta","black_terracotta","purple_terracotta","yellow_terracotta","magenta_terracotta","calcite","purpur_slab","end_stone_bricks","end_stone_brick_slab"}

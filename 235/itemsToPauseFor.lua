@@ -1,0 +1,1 @@
+return {"apple","poisonous_potato",	"rabbit","cooked_rabbit","salmon","cooked_salmon","chorus_fruit","wheat","pumpkin"}

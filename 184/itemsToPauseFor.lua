@@ -1,0 +1,1 @@
+return {"music_disc_13","music_disc_cat","golden_apple","furnace","lodestone","chest_minecart","resin_bricks","resin_brick_stairs","resin_brick"}

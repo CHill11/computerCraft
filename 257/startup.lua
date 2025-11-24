@@ -1,7 +1,7 @@
 local usefulFunctions = require("usefulFunctions")
 local fileName = "startupForRowFilter.lua"
-local searchPattern = ""
-local replaceString = ""
+local searchPattern = "(ROW_COMMAND_COMPUTER = )nil"
+local replaceString = string.format("ROW_COMMAND_COMPUTER = %d", os.getComputerID())
 usefulFunctions.openRednet()
 
 local gotStartupForRowFilter = false
