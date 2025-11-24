@@ -1,4 +1,4 @@
-usefulFunctions = require("usefulFunctions")
+local usefulFunctions = require("usefulFunctions")
 if not rednet.isOpen() then
 	usefulFunctions.openRednet()
 end

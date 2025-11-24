@@ -1,15 +1,12 @@
-function moveForward(num)
-    assert(turtle.forward())
-    num = num + 1
-    return num
-end
+local usefulFunctions = require("usefulFunctions")
+
 print("How far should I place torches?")
-dist = tonumber(read())
-moved = 0
-hasTorch = false
+local dist = tonumber(read())
+local moved = 0
+local hasTorch = false
 repeat
     turtle.select(1)
-    item = turtle.getItemDetail()
+    local item = turtle.getItemDetail()
     if item then
         if item.name == "minecraft:torch" then
             print("Starting...")
@@ -19,14 +16,12 @@ repeat
         print("Need torches in slot 1")
         sleep(1)
     end
-until hasTorch 
+until hasTorch
 while moved < dist do
-    moved = moveForward(moved)
+    _,moved = usefulFunctions.moveForward(moved)
    if moved % 8 == 0 then
-       turtle.turnLeft() 
-       turtle.turnLeft()
+       usefulFunctions.turnAround()
        turtle.place()
-       turtle.turnLeft()
-       turtle.turnLeft()
+       usefulFunctions.turnAround()
    end
 end

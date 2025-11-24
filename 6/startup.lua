@@ -1,7 +1,7 @@
 while true do
-   wasSucked = turtle.suckUp() --wasSucked is a boolen to see it suck got an item
+   local wasSucked = turtle.suckUp() --wasSucked is a boolen to see it suck got an item
    if wasSucked == true then
-      item = turtle.getItemDetail()
+      local item = turtle.getItemDetail()
       if item.name == "minecraft:oak_log" then
           print("sorting wood")
           turtle.turnRight()
@@ -26,4 +26,4 @@ while true do
           turtle.dropDown()
       end
     end
-end      
+end

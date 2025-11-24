@@ -1,4 +1,11 @@
 --id = 155
+local gotFile = false
+while not gotFile do
+	if shell.run("getfile",207,"usefulFunctions.lua") then
+		gotFile = true
+	end
+end
+
 local turtleID = os.getComputerID()
 local usefulFunctions = require("usefulFunctions")
 

@@ -1,19 +1,12 @@
---[[leftOn = rs.getInput("left")
-backOn = rs.getInput("back")
-print("is left on")
-print(leftOn)
-print("is back on")
-print(backOn)
-]]
 rednet.open("left")
---if rednet signal is on dig the block
+
 while true do
     local event, id, message = os.pullEvent("rednet_message")
     print(message)
     if event == "rednet_message" then
         if message == "close" then --place water
 		turtle.select(16)
-			item = turtle.getItemDetail()
+			local item = turtle.getItemDetail()
 			if item.name == "minecraft:bucket" then
 				turtle.turnLeft()
 				turtle.turnLeft()
@@ -39,7 +32,7 @@ while true do
             turtle.place()
         elseif message == "open" then--pick up water
 			turtle.select(16)
-			item = turtle.getItemDetail()
+			local item = turtle.getItemDetail()
 			if item.name ~= "minecraft:bucket" then
 				turtle.turnLeft()
 				turtle.turnLeft()

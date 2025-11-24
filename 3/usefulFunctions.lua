@@ -279,7 +279,7 @@ function usefulFunctions.placeUp(placed, blockName)
     return true, placed
 end
 
----Place block up
+---Place block down
 ---@param placed number? Number of blocks placed
 ---@param blockName string? the name of the block you want to place
 ---@return boolean success
@@ -368,7 +368,7 @@ function usefulFunctions.sortToCrate(top,middle,bottom,turtleToMessage,hopper,no
 					end
 					--print(totalCount)
 					if totalCount == 0 then
-						rednet.send(turtleToMessage,"sort")-- let the upstream turtle know they can resume sorting
+						rednet.send(turtleToMessage,"sort","filter")-- let the upstream turtle know they can resume sorting
 						break
 					end
 					os.sleep(0.5)
@@ -376,7 +376,7 @@ function usefulFunctions.sortToCrate(top,middle,bottom,turtleToMessage,hopper,no
 					--print(textutils.serialize(hopInv)) -- Print table content for debugging
 				end
 			else
-				rednet.send(turtleToMessage,"sort")-- let the upstream turtle know they can resume sorting
+				rednet.send(turtleToMessage,"sort","filter")-- let the upstream turtle know they can resume sorting
 			end
 			print("Resuming...")
 			rs.setOutput("bottom",true)-- turns on the redstone signal so that the hopper won't suck the items out of the turtle
@@ -418,13 +418,15 @@ function usefulFunctions.sortToCrateRight(top,middle,bottom,turtleToMessage,hopp
 					end
 					--print(totalCount)
 					if totalCount == 0 then
-						rednet.send(turtleToMessage,"sort")-- let the upstream turtle know they can resume sorting
+						rednet.send(turtleToMessage,"sort","filter")-- let the upstream turtle know they can resume sorting
 						break
 					end
 					os.sleep(0.5)
 					print("Going to sleep. Hopper contains " .. totalCount .. " total item(s).")
 					--print(textutils.serialize(hopInv)) -- Print table content for debugging
 				end
+			else
+				rednet.send(turtleToMessage,"sort","filter")-- let the upstream turtle know they can resume sorting
 			end
 			print("Resuming...")
 			rs.setOutput("bottom",true)-- turns on the redstone signal so that the hopper won't suck the items out of the turtle
@@ -523,14 +525,14 @@ function usefulFunctions.sendFile(fileName, id)
 end
 
 ---Use to open rednet
----@return any
 ---@return boolean
+---@return any
 function usefulFunctions.openRednet()
 	local modem = peripheral.find("modem", rednet.open) or ""
 	if rednet.isOpen() then	
-		return modem, true
+		return true, modem
 	else
-		return modem, false
+		return false, modem
 	end
 end
 
@@ -1096,5 +1098,53 @@ function usefulFunctions.printWrap(text)
     end
 end
 
+---Wait a specified ammount of time desplaying the remaing seconds
+---@param secs number
+---@param intervals number
+function usefulFunctions.wait(secs,intervals)
+	secs = secs or 1
+	intervals = intervals or 4
+	local secsDivided = secs / intervals
+	for i = 1,intervals do
+		print(math.floor(intervals))
+		intervals = intervals - 1
+		os.sleep(secsDivided)
+	end
+end
 --------------------------------end of display functions------------------------------
+
+
+-----------------------------Functions to modify a file-------------------------------
+
+---comment
+---@param fileName string
+---@param searchPattern string
+---@param replaceString string
+---@return boolean worked
+function usefulFunctions.modifyFile(fileName,searchPattern,replaceString)
+local oldFileHandle, err = fs.open(shell.resolve(fileName),"r") -- open the file for reading
+if not oldFileHandle then -- make sure the file is open
+    print("Error reading file. Error " .. err)
+	return false
+end
+local oldFile = oldFileHandle.readAll() -- read all the file
+oldFileHandle.close()
+local newContent, count = string.gsub(oldFile,searchPattern,replaceString)
+if count > 0 then -- if gsub changed the file then count will reflet the number changed
+    print("Successfully changed file.")
+
+    local writeHandle,err = fs.open(shell.resolve(fileName),"w")
+    if not writeHandle then
+        print("Error writing to file. Error " .. err)
+        return false
+    end
+    writeHandle.write(tostring(newContent))
+    writeHandle.close()
+else
+    print("Unable to find the string.")
+	return false
+end
+print("passed adding id")
+return true
+end
 return usefulFunctions

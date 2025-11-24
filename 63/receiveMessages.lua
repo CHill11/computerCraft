@@ -5,7 +5,7 @@ if not rednet.isOpen() then
 end
 
 while true do
-	id,message = rednet.receive()
+	local id,message = rednet.receive()
 	print("Turtle or computer " .. id .. " need attention.")
 	print(message)
 end

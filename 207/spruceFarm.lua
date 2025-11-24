@@ -14,6 +14,7 @@ else
 	print("No spruce sapling in the first slot or no bonemeal in the last slot")
 end
 while cont do
+	local blockID
 	isBlock, blockID = turtle.inspect()
 	if not isBlock then
 		turtle.select(1)

@@ -1,6 +1,6 @@
 rednet.open("right")
 while true do
-	wasSucked = turtle.suck()--boolean to see if suck got an item
+	local wasSucked = turtle.suck()--boolean to see if suck got an item
 	if wasSucked then
 		turtle.dropUp()
 		rednet.send(118,"dropUp")

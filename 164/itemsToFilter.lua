@@ -1,4 +1,4 @@
-itemsToFilter = {}
+local itemsToFilter = {}
 
 function itemsToFilter.items()
 	local items = {top = "minecraft:honey_block",middle = "minecraft:honeycomb", bottom = "minecraft:pale_oak_trapdoor"}

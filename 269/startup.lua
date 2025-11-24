@@ -4,7 +4,7 @@ local turtleID = os.getComputerID()
 print("My turtle ID is " .. turtleID .. ".")
 print("Started...")
 while true do
-	wasSuck = turtle.suck()
+	local wasSuck = turtle.suck()
 	if wasSuck then
 		turtle.dropUp()
 	end

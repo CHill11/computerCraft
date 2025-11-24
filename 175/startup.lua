@@ -1,28 +1,29 @@
-local server = 207
-
-function timer()-- the timeout timer for downloading usefulFunctions
-	sleep(3)
+local function timer()
+	os.sleep(5)
 end
 
-function getFileUsefulFunctionUpdated()
-	shell.run("getfile",server,"usefulFunctions.lua")
-	if fs.exists(shell.resolve("usefulFunctions.lua")) then
-		gotFileUsefulFunction = true
+local function getFiles()
+	local server = 207
+	local fileName = {"farmer.lua","getLava.lua","usefulFunctions.lua"}
+	for names in ipairs(fileName) do
+		if shell.run("getfile.lua",server, fileName[names]) then
+			print("Updated ", fileName[names])
+		else
+			print("Could not update ", fileName[names])
+			read()
+		end
 	end
 end
 
-if fs.exists(shell.resolve("usefulFunctions.lua")) then
-	fs.delete(shell.resolve("usefulFunctions.lua"))
-	if not fs.exists(shell.resolve("usefulFunctions.lua")) then
-		print("Deleted usefulFunctions")
-	else 
-		print("Error:Could not delete usefulFunctions")
+local complete = false
+repeat
+	local finishedFirst = parallel.waitForAny(getFiles,timer)
+	if finishedFirst == 1 then
+		complete = true
 	end
-end
-while not gotFileUsefulFunction do
-	gotFileUsefulFunction = false
-	parallel.waitForAny(getFileUsefulFunctionUpdated, timer)-- the download for usefulFunctions or timeout
-end
+until complete == true
+term.clear()
+print("Ready!")
 
 local usefulFunctions = require("usefulFunctions")
 

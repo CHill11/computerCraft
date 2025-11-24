@@ -3,7 +3,7 @@ print("My turtle ID is " .. turtleID .. ".")
 print("Started...")
 
 while true do
-	wasSucked = turtle.suckDown()
+	local wasSucked = turtle.suckDown()
 	if wasSucked then
 		turtle.drop()
 	end

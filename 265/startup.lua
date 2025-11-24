@@ -1,5 +1,5 @@
 --id = 265
-function chestFull(chestWrap)
+local function chestFull(chestWrap)
 	local slotsUsedInChest = 0
 	local chestSize = chestWrap.size()
 	local chest = chestWrap.list()
@@ -27,13 +27,13 @@ while true do
 		print("Blast furnace chest is full.")
 		sleep(10)
 	end
-	
+
 	while chestFull(toCoalChest) do -- see if fuel chest is full
 		print("Coal chest is full.")
 		sleep(10)
 	end
-	
-	wasSuck = turtle.suckUp()
+
+	local wasSuck = turtle.suckUp()
 	if wasSuck then
 		local item = turtle.getItemDetail()
 		if item.name == "minecraft:raw_iron" or item.name == "minecraft:raw_gold" then

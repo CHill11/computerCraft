@@ -1,6 +1,6 @@
 rednet.open("back")
 
-start = true
+local start = true
 while start do
     local event, id, message = os.pullEvent("rednet_message")
 	if message == "harvest" then

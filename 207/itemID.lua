@@ -1,4 +1,6 @@
  while true do
-	item = turtle.getItemDetail()
-	print("Name:" .. item.name)
+	local item = turtle.getItemDetail()
+	if item then
+		print("Name:" .. item.name)
+	end
 end

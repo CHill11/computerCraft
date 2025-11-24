@@ -53,7 +53,7 @@ while i <= moveBack do -- move back to the starting location
 	if success then -- 
 		usefulFunctions.place(0,blockToPlace)
 		i = i + 1
-	else -- if the turtle couldn't move back go up one and then just move back with out placing blocks
+	else -- if the turtle couldn't move back go up one and then just move back without placing blocks
 		usefulFunctions.moveUp()
 		while i <= moveBack do
 			usefulFunctions.moveBack()

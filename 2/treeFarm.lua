@@ -18,7 +18,7 @@ rednet.open("right")
 local sleepDuration = 600
 local secondRow = true
 
-function harvest1()
+local function harvest1()
 print("in harvest")
 	while true do
 		for i = 1,length do -- go the length  of the farm
@@ -57,7 +57,7 @@ print("in harvest")
 	end
 end
 
-function harvest2()
+local function harvest2()
 print("in harvest 2")
 	while true do
 		for i = 1,length do -- go the length  of the farm
